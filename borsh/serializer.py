@@ -1,5 +1,5 @@
 
-
+# TODO: remove once other is implemented
 class BinarySerializer:
     def __init__(self, schema):
         self.array = bytearray()
@@ -75,23 +75,18 @@ class Serializer:
     """
     def __init__(self, obj):
         self.obj = obj
-
-    def serialize_num(self, value, n_bytes):
-        orig_value = value
-        assert value >= 0, "Can't serialize negative numbers %d" % value
-        for i in range(n_bytes):
-            self.array.append(value & 255)
-            value //= 256
-        assert value == 0, "Value %d has more than %d bytes" % (orig_value, n_bytes)
-
-    def serialize_field(self, value):
-        pass
+        self.array = bytearray()
 
     def serialize(self) -> list:
         """
         Performs serialization and returns list of bytes
         """
-        pass
+        fields = vars(self.obj).keys()
+        for field in fields:
+            self.array += getattr(self.obj, field).serialize()
+        return self.array
+
 
 def serialize(obj):
-    pass
+    serializer = Serializer(obj)
+    return serializer.serialize()

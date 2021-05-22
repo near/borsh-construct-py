@@ -11,7 +11,7 @@ setuptools.setup(
     description="Borsh is an implementation of the Borsh binary serialization format for Python projects.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/khorolets/borsh-py",
+    url="https://github.com/near/borsh-py",
     packages=setuptools.find_packages(),
     license="(MIT OR Apache-2.0)",
     classifiers=[
