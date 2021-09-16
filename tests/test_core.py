@@ -2,7 +2,22 @@
 from typing import Any
 
 import pytest
-from borsh import F32, F64, I8, I16, I32, I64, I128, U8, U16, U32, U64, U128, Bool
+from borsh import (
+    F32,
+    F64,
+    I8,
+    I16,
+    I32,
+    I64,
+    I128,
+    U8,
+    U16,
+    U32,
+    U64,
+    U128,
+    Bool,
+    Vec,
+)
 from construct import Construct, Float32l, Float64l, FormatField, FormatFieldError
 
 TYPE_INPUT_EXPECTED = (
@@ -45,6 +60,8 @@ TYPE_INPUT_EXPECTED = (
     ),
     (F32, 0.5, [0, 0, 0, 63]),
     (F64, -0.5, [0, 0, 0, 0, 0, 0, 224, 191]),
+    (I16[3], [1, 2, 3], [1, 0, 2, 0, 3, 0]),
+    (Vec(I16), [1, 1], [2, 0, 0, 0, 1, 0, 1, 0]),
 )
 
 

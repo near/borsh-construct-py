@@ -57,3 +57,20 @@ def Vec(subcon: Construct) -> Array:  # noqa: N802
         Array: a Construct PrefixedArray.
     """
     return PrefixedArray(U32, subcon)
+
+
+Bytes = Prefixed(U32, GreedyBytes)
+
+
+class _String(Adapter):
+    def __init__(self) -> None:
+        super().__init__(Bytes)  # type: ignore
+
+    def _decode(self, obj: bytes, context, path) -> str:
+        return obj.decode("utf8")
+
+    def _encode(self, obj: str, context, path) -> bytes:
+        return bytes(obj, "utf8")
+
+
+String = _String()

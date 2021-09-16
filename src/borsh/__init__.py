@@ -1,6 +1,25 @@
 from importlib.metadata import version
 
-from .core import F32, F64, I8, I16, I32, I64, I128, U8, U16, U32, U64, U128, Bool
+from .core import (
+    F32,
+    F64,
+    I8,
+    I16,
+    I32,
+    I64,
+    I128,
+    U8,
+    U16,
+    U32,
+    U64,
+    U128,
+    Bool,
+    Vec,
+    CStruct,
+    TupleStruct,
+    Bytes,
+    String,
+)
 
 __version__ = version(__name__)
 __all__ = [
@@ -17,4 +36,9 @@ __all__ = [
     "F32",
     "F64",
     "Bool",
+    "Vec",
+    "CStruct",
+    "TupleStruct",
+    "Bytes",
+    "String",
 ]
