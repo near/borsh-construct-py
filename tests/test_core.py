@@ -17,8 +17,28 @@ from borsh import (
     U128,
     Bool,
     Vec,
+    CStruct,
+    TupleStruct,
+    Enum,
+    String,
+    Option,
+)
+from borsh.core import (
+    NAMED_TUPLE_FIELD_ERROR,
+    TUPLE_DATA,
+    UNNAMED_SUBCON_ERROR,
+    NON_STR_NAME_ERROR,
+    UNDERSCORE_NAME_ERROR,
+    TUPLE_DATA_NAME_ERROR,
 )
 from construct import Construct, Float32l, Float64l, FormatField, FormatFieldError
+
+ENUM = Enum(
+    "Unit",
+    "TupleVariant" / TupleStruct(U128, String, I64, Option(U16)),
+    "CStructVariant"
+    / CStruct("u128_field" / U128, "string_field" / String, "vec_field" / Vec(U16)),
+)
 
 TYPE_INPUT_EXPECTED = (
     (Bool, True, [1]),
@@ -62,6 +82,176 @@ TYPE_INPUT_EXPECTED = (
     (F64, -0.5, [0, 0, 0, 0, 0, 0, 224, 191]),
     (I16[3], [1, 2, 3], [1, 0, 2, 0, 3, 0]),
     (Vec(I16), [1, 1], [2, 0, 0, 0, 1, 0, 1, 0]),
+    (
+        TupleStruct(U128, String, I64, Option(U16)),
+        [123, "hello", 1400, 13],
+        [
+            123,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            5,
+            0,
+            0,
+            0,
+            104,
+            101,
+            108,
+            108,
+            111,
+            120,
+            5,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            13,
+            0,
+        ],
+    ),
+    (
+        CStruct("u128_field" / U128, "string_field" / String, "vec_field" / Vec(U16)),
+        {"u128_field": 1033, "string_field": "hello", "vec_field": [1, 2, 3]},
+        [
+            9,
+            4,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            5,
+            0,
+            0,
+            0,
+            104,
+            101,
+            108,
+            108,
+            111,
+            3,
+            0,
+            0,
+            0,
+            1,
+            0,
+            2,
+            0,
+            3,
+            0,
+        ],
+    ),
+    (ENUM, ENUM.enum.Unit(), [0]),
+    (
+        ENUM,
+        ENUM.enum.TupleVariant([10, "hello", 13, 12]),
+        [
+            1,
+            10,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            5,
+            0,
+            0,
+            0,
+            104,
+            101,
+            108,
+            108,
+            111,
+            13,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            12,
+            0,
+        ],
+    ),
+    (
+        ENUM,
+        ENUM.enum.CStructVariant(
+            u128_field=15,
+            string_field="hi",
+            vec_field=[3, 2, 1],
+        ),
+        [
+            2,
+            15,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+            0,
+            0,
+            104,
+            105,
+            3,
+            0,
+            0,
+            0,
+            3,
+            0,
+            2,
+            0,
+            1,
+            0,
+        ],
+    ),
 )
 
 
@@ -86,3 +276,44 @@ def test_nan_floats(nonan_type: FormatField, construct_type: FormatField) -> Non
     nan_serialized = construct_type.build(nan)
     with pytest.raises(FormatFieldError):
         nonan_type.parse(nan_serialized)
+
+
+def test_named_tuple_struct_field_raises() -> None:
+    with pytest.raises(ValueError) as exc:
+        TupleStruct("foo" / U8)
+    assert exc.value == NAMED_TUPLE_FIELD_ERROR
+
+
+def test_unnamed_subcon_raises() -> None:
+    """Check that error is raised when enum variant or CStruct field is unnamed."""
+    with pytest.raises(ValueError) as excinfo:
+        Enum("foo", TupleStruct(U8))
+    assert str(excinfo.value) == str(UNNAMED_SUBCON_ERROR)
+
+
+def test_non_str_name_raises() -> None:
+    """Check that error is raised when subcon name is not a string."""
+    with pytest.raises(ValueError) as excinfo:
+        CStruct(1 / U8)
+    assert str(excinfo.value) == str(NON_STR_NAME_ERROR)
+
+
+def test_tuple_data_name_raises() -> None:
+    """Check that error is raised when subcon name is not a string."""
+    with pytest.raises(ValueError) as excinfo:
+        CStruct(TUPLE_DATA / U8)
+    assert str(excinfo.value) == str(TUPLE_DATA_NAME_ERROR)
+
+
+def test_underscore_name_raises() -> None:
+    """Check that error is raised when subcon name starts with underscore."""
+    with pytest.raises(ValueError) as excinfo:
+        CStruct("_foo" / U8)
+    assert str(excinfo.value) == str(UNDERSCORE_NAME_ERROR)
+
+
+def test_unrecognized_variant_type_raises() -> None:
+    """Check that error is raised if variant type is not valid."""
+    with pytest.raises(ValueError) as excinfo:
+        Enum("foo" / U8)
+    assert "Unrecognized" in str(excinfo.value)

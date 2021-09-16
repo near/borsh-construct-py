@@ -81,3 +81,68 @@ struct Person {
 }
 
 ```
+
+!!! note
+    `borsh.CStruct` is just `construct.Struct`.
+
+## Tuple structs
+```python
+>>> from borsh import TupleStruct, I32, F32
+>>> pair = TupleStruct(I32, F32)
+>>> pair.build([3, 0.5])
+b'\x03\x00\x00\x00\x00\x00\x00?'
+
+```
+Rust type:
+```rust
+struct Pair(i32, f32);
+
+```
+
+!!! note
+    `borsh.TupleStruct` is just `construct.Sequence`.
+
+
+## Enum
+
+Rust's `enum` is the trickiest part of `borsh-py` because it's rather different from Python's `enum.Enum`. Under the hood, `borsh-py` uses the [`sumtypes`](https://sumtypes.readthedocs.io/en/latest/) library to represent Rust enums in Python.
+
+Notice below how our `message` object has a `.enum` attribute: this is the Python imitation of Rust's enum type.
+
+Defining an enum:
+
+```python
+>>> from borsh import Enum, I32, CStruct, TupleStruct, String
+>>> message = Enum(
+...     "Quit",
+...     "Move" / CStruct("x" / I32, "y" / I32),
+...     "Write" / TupleStruct(String),
+...     "ChangeColor" / TupleStruct(I32, I32, I32),
+... )
+>>> message.build(message.enum.Quit())
+b'\x00'
+>>> message.parse(b'\x00')
+EnumDef.Quit()
+>>> message.build(message.enum.Move(x=1, y=3))
+b'\x01\x01\x00\x00\x00\x03\x00\x00\x00'
+>>> message.parse(b'\x01\x01\x00\x00\x00\x03\x00\x00\x00')
+EnumDef.Move(x=1, y=3)
+>>> message.build(message.enum.Write(("hello",)))
+b'\x02\x05\x00\x00\x00hello'
+>>> message.parse(b'\x02\x05\x00\x00\x00hello')
+EnumDef.Write(tuple_data=ListContainer(['hello']))
+>>> message.build(message.enum.ChangeColor((1, 2, 3)))
+b'\x03\x01\x00\x00\x00\x02\x00\x00\x00\x03\x00\x00\x00'
+>>> message.parse(b'\x03\x01\x00\x00\x00\x02\x00\x00\x00\x03\x00\x00\x00')
+EnumDef.ChangeColor(tuple_data=ListContainer([1, 2, 3]))
+
+```
+Rust type:
+```rust
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+```

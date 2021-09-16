@@ -1,13 +1,17 @@
 [flake8]
 ignore =
     D100,
+    D104,
     I001,
+    I003,
+    I005,
     N814,
     Q000,
     WPS110,
     WPS111,
     WPS115,
     WPS201,
+    WPS202,
     WPS221,
     WPS235,
     WPS300,
@@ -18,6 +22,7 @@ ignore =
     WPS412,
     WPS430,
     WPS432,
+    WPS441,
     W503,
     DAR201
 exclude = .git,__pycache__,docs/source/conf.py,old,build,dist

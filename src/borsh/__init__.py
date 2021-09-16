@@ -19,7 +19,9 @@ from .core import (
     TupleStruct,
     Bytes,
     String,
+    Option,
 )
+from .enum import Enum
 
 __version__ = version(__name__)
 __all__ = [
@@ -41,4 +43,6 @@ __all__ = [
     "TupleStruct",
     "Bytes",
     "String",
+    "Enum",
+    "Option",
 ]

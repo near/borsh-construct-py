@@ -1,3 +1,4 @@
+from typing import Any, Optional
 from math import isnan
 
 from construct import Adapter, Array, BytesInteger, Construct, Switch
@@ -13,11 +14,56 @@ from construct import Int32ul as U32
 from construct import Int64sl as I64
 from construct import Int64ul as U64
 from construct import Pass, Prefixed, PrefixedArray, Renamed
-from construct import Sequence as TupleStruct
-from construct import Struct as CStruct
+from construct import Sequence
+from construct import Struct
 
+
+TUPLE_DATA = "tuple_data"
+
+NAMED_TUPLE_FIELD_ERROR = ValueError("TupleStruct cannot have named fields")
+UNNAMED_SUBCON_ERROR = ValueError("CStruct fields and enum variants must be named")
+NON_STR_NAME_ERROR = ValueError("Names must be strings.")
+TUPLE_DATA_NAME_ERROR = ValueError(
+    f"The name {TUPLE_DATA} is reserved. If you encountered this "
+    "error it's either a wild coincidence or you're "
+    "doing it wrong."  # noqa: C812
+)
+UNDERSCORE_NAME_ERROR = ValueError("names cannot start with an underscore.")
 U128 = BytesInteger(16, signed=False, swapped=True)
 I128 = BytesInteger(16, signed=True, swapped=True)
+
+
+class TupleStruct(Sequence):
+    """Python implementation of Rust tuple struct."""
+
+    def __init__(self, *subcons) -> None:
+        super().__init__(*subcons)  # type: ignore
+        for subcon in self.subcons:
+            if subcon.name is not None:
+                raise NAMED_TUPLE_FIELD_ERROR
+
+
+class CStruct(Struct):
+    def __init__(self, *subcons) -> None:
+        super().__init__(*subcons)
+        for subcon in subcons:
+            check_subcon_name(subcon.name)
+
+
+def _check_name_not_null(name: Optional[str]) -> None:
+    if name is None:
+        raise UNNAMED_SUBCON_ERROR
+
+
+def check_subcon_name(name: Optional[str]) -> None:
+    """Check that CStructs and Enums have valid names"""
+    _check_name_not_null(name)
+    if not isinstance(name, str):
+        raise NON_STR_NAME_ERROR
+    if name == TUPLE_DATA:
+        raise TUPLE_DATA_NAME_ERROR
+    if name[0] == "_":
+        raise UNDERSCORE_NAME_ERROR
 
 
 class FormatFieldNoNan(FormatField):
@@ -74,3 +120,25 @@ class _String(Adapter):
 
 
 String = _String()
+
+
+class Option(Adapter):
+    """Borsh implementation for Rust's Option type."""
+
+    _discriminator_key = "discriminator"
+    _value_key = "value"
+
+    def __init__(self, subcon: Construct) -> None:
+        option_struct = CStruct(
+            self._discriminator_key / U8,
+            self._value_key
+            / IfThenElse(lambda this: this[self._discriminator_key] == 0, Pass, subcon),
+        )
+        super().__init__(option_struct)  # type: ignore
+
+    def _decode(self, obj: Any, context, path) -> Any:
+        return obj[self._value_key]
+
+    def _encode(self, obj: Any, context, path) -> dict:
+        discriminator = 0 if obj is None else 1
+        return {self._discriminator_key: discriminator, self._value_key: obj}
