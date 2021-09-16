@@ -13,7 +13,7 @@ Borsh stands for Binary Object Representation Serializer for Hashing. It is mean
 poetry install
 
 ```
-3. Install [nox-poetry](https://github.com/cjolowicz/nox-poetry) (note: do not use Poetry to install this)
+3. Install [nox-poetry](https://github.com/cjolowicz/nox-poetry) (note: do not use Poetry to install this, see [here](https://medium.com/@cjolowicz/nox-is-a-part-of-your-global-developer-environment-like-poetry-pre-commit-pyenv-or-pipx-1cdeba9198bd))
 4. Activate the poetry shell:
 ```sh
 poetry shell
