@@ -1,4 +1,4 @@
-from importlib.metadata import version
+from importlib.metadata import version, PackageNotFoundError
 
 from .core import (
     F32,
@@ -25,7 +25,11 @@ from .core import (
 )
 from .enum import Enum
 
-__version__ = version(__name__)
+try:
+    __version__ = version(__name__)
+except PackageNotFoundError:  # pragma: no cover
+    __version__ = "unknown"
+
 __all__ = [
     "I8",
     "I16",
