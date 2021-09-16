@@ -1,7 +1,6 @@
-from typing import Any, Optional
+from typing import Any, Optional, List, Tuple
 from math import isnan
-
-from construct import Adapter, Array, BytesInteger, Construct, Switch
+from construct import Adapter, Array, BytesInteger, Construct
 from construct import singleton  # type: ignore
 from construct import Flag as Bool
 from construct import FormatField, FormatFieldError, GreedyBytes, IfThenElse
@@ -13,10 +12,9 @@ from construct import Int32sl as I32
 from construct import Int32ul as U32
 from construct import Int64sl as I64
 from construct import Int64ul as U64
-from construct import Pass, Prefixed, PrefixedArray, Renamed
+from construct import Pass, Prefixed, PrefixedArray
 from construct import Sequence
 from construct import Struct
-
 
 TUPLE_DATA = "tuple_data"
 
@@ -44,6 +42,8 @@ class TupleStruct(Sequence):
 
 
 class CStruct(Struct):
+    """Python implementation of Rust C-like struct."""
+
     def __init__(self, *subcons) -> None:
         super().__init__(*subcons)
         for subcon in subcons:
@@ -56,7 +56,7 @@ def _check_name_not_null(name: Optional[str]) -> None:
 
 
 def check_subcon_name(name: Optional[str]) -> None:
-    """Check that CStructs and Enums have valid names"""
+    """Check that CStructs and Enums have valid names."""  # noqa: DAR101
     _check_name_not_null(name)
     if not isinstance(name, str):
         raise NON_STR_NAME_ERROR
@@ -136,9 +136,37 @@ class Option(Adapter):
         )
         super().__init__(option_struct)  # type: ignore
 
-    def _decode(self, obj: Any, context, path) -> Any:
+    def _decode(self, obj, context, path) -> Any:
         return obj[self._value_key]
 
-    def _encode(self, obj: Any, context, path) -> dict:
+    def _encode(self, obj, context, path) -> dict:
         discriminator = 0 if obj is None else 1
         return {self._discriminator_key: discriminator, self._value_key: obj}
+
+
+class HashMap(Adapter):
+    """Borsh implementation for Rust HashMap."""
+
+    def __init__(self, key_subcon: Construct, value_subcon: Construct) -> None:
+        super().__init__(
+            PrefixedArray(U32, TupleStruct(key_subcon, value_subcon)),
+        )  # type: ignore
+
+    def _decode(self, obj: List[Tuple[Any, Any]], context, path) -> dict:
+        return dict(obj)
+
+    def _encode(self, obj, context, path) -> List[Tuple]:
+        return sorted(obj.items())
+
+
+class HashSet(Adapter):
+    """Python implementation of Rust HashSet."""
+
+    def __init__(self, subcon: Construct) -> None:
+        super().__init__(PrefixedArray(U32, subcon))  # type: ignore
+
+    def _decode(self, obj, context, path) -> set:
+        return set(obj)
+
+    def _encode(self, obj, context, path) -> list:
+        return sorted(obj)

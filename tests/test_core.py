@@ -22,6 +22,9 @@ from borsh import (
     Enum,
     String,
     Option,
+    HashMap,
+    HashSet,
+    Bytes,
 )
 from borsh.core import (
     NAMED_TUPLE_FIELD_ERROR,
@@ -252,6 +255,61 @@ TYPE_INPUT_EXPECTED = (
             0,
         ],
     ),
+    (
+        HashMap(U8, ENUM),
+        {2: ENUM.enum.Unit(), 1: ENUM.enum.TupleVariant([11, "hello", 123, None])},
+        [
+            2,
+            0,
+            0,
+            0,
+            1,
+            1,
+            11,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            5,
+            0,
+            0,
+            0,
+            104,
+            101,
+            108,
+            108,
+            111,
+            123,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+        ],
+    ),
+    (HashSet(U8), {1, 2, 3}, [3, 0, 0, 0, 1, 2, 3]),
+    (Bytes, b"\x01\x02\x03", [3, 0, 0, 0, 1, 2, 3]),
+    (
+        String,
+        "🚀🚀🚀",
+        [12, 0, 0, 0, 240, 159, 154, 128, 240, 159, 154, 128, 240, 159, 154, 128],
+    ),
 )
 
 
@@ -279,6 +337,7 @@ def test_nan_floats(nonan_type: FormatField, construct_type: FormatField) -> Non
 
 
 def test_named_tuple_struct_field_raises() -> None:
+    """Check that error is raised if TupleStruct field is named."""
     with pytest.raises(ValueError) as exc:
         TupleStruct("foo" / U8)
     assert exc.value == NAMED_TUPLE_FIELD_ERROR
@@ -294,7 +353,7 @@ def test_unnamed_subcon_raises() -> None:
 def test_non_str_name_raises() -> None:
     """Check that error is raised when subcon name is not a string."""
     with pytest.raises(ValueError) as excinfo:
-        CStruct(1 / U8)
+        CStruct(1 / U8)  # type: ignore
     assert str(excinfo.value) == str(NON_STR_NAME_ERROR)
 
 

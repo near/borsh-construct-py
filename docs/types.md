@@ -15,6 +15,8 @@ Example:
 >>> from borsh import U32
 >>> U32.build(42)
 b'*\x00\x00\x00'
+>>> U32.parse(b'*\x00\x00\x00')
+42
 
 ```
 
@@ -82,9 +84,6 @@ struct Person {
 
 ```
 
-!!! note
-    `borsh.CStruct` is just `construct.Struct`.
-
 ## Tuple structs
 ```python
 >>> from borsh import TupleStruct, I32, F32
@@ -98,9 +97,6 @@ Rust type:
 struct Pair(i32, f32);
 
 ```
-
-!!! note
-    `borsh.TupleStruct` is just `construct.Sequence`.
 
 
 ## Enum
@@ -146,3 +142,113 @@ enum Message {
     ChangeColor(i32, i32, i32),
 }
 ```
+
+## HashMap
+
+You can think of HashMap as a Python dictionary as long as the keys and values have a well-defined type.
+
+```python
+>>> from borsh import HashMap, String, U32
+>>> scores = HashMap(String, U32)
+>>> scores.build({"Blue": 10, "Yellow": 50})
+b'\x02\x00\x00\x00\x04\x00\x00\x00Blue\n\x00\x00\x00\x06\x00\x00\x00Yellow2\x00\x00\x00'
+>>> scores.parse(b'\x02\x00\x00\x00\x04\x00\x00\x00Blue\n\x00\x00\x00\x06\x00\x00\x00Yellow2\x00\x00\x00')
+{'Blue': 10, 'Yellow': 50}
+
+```
+Rust type:
+```rust
+fn main() {
+    use std::collections::HashMap;
+
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Yellow"), 50);
+}
+```
+
+## HashSet
+
+The HashSet is similar to a Python `set` with a well-defined type.
+
+```python
+>>> from borsh import HashSet, I32
+>>> a = HashSet(I32)
+>>> a.build({1, 2, 3})
+b'\x03\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x03\x00\x00\x00'
+>>> a.parse(b'\x03\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x03\x00\x00\x00')
+{1, 2, 3}
+
+```
+Rust type:
+```rust
+use std::collections::HashSet;
+
+fn main() {
+    let mut a: HashSet<i32> = vec![1i32, 2, 3].into_iter().collect();
+}
+
+```
+
+## Option
+
+Rust programmers will notice that our Option type is not implemented like a Rust enum, because it's not worth the complexity.
+
+```python
+>>> from borsh import Option, U8
+>>> optional_num = Option(U8)
+>>> optional_num.build(None)
+b'\x00'
+>>> optional_num.parse(b'\x00') is None
+True
+>>> optional_num.build(3)
+b'\x01\x03'
+>>> optional_num.parse(b'\x01\x03')
+3
+
+```
+Rust type:
+```rust
+Option<u8>
+```
+
+## Bytes
+
+The Borsh spec doesn't specifically mention serializing raw bytes, but it's worth including anyway:
+
+```python
+>>> from borsh import Bytes
+>>> Bytes.build(bytes([1, 2, 3]))
+b'\x03\x00\x00\x00\x01\x02\x03'
+>>> Bytes.parse(b'\x03\x00\x00\x00\x01\x02\x03')
+b'\x01\x02\x03'
+
+```
+Rust type:
+```rust
+vec![1u8, 2, 3]
+
+```
+
+## String
+
+Python:
+
+```python
+>>> from borsh import String
+>>> String.build("🚀🚀🚀")
+b'\x0c\x00\x00\x00\xf0\x9f\x9a\x80\xf0\x9f\x9a\x80\xf0\x9f\x9a\x80'
+>>> String.parse(b'\x0c\x00\x00\x00\xf0\x9f\x9a\x80\xf0\x9f\x9a\x80\xf0\x9f\x9a\x80')
+'🚀🚀🚀'
+
+```
+
+Rust type:
+
+```rust
+String::from("🚀🚀🚀")
+
+```
+
+

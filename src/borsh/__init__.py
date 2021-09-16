@@ -20,6 +20,8 @@ from .core import (
     Bytes,
     String,
     Option,
+    HashMap,
+    HashSet,
 )
 from .enum import Enum
 
@@ -45,4 +47,6 @@ __all__ = [
     "String",
     "Enum",
     "Option",
+    "HashMap",
+    "HashSet",
 ]

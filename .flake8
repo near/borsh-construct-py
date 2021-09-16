@@ -2,6 +2,7 @@
 ignore =
     D100,
     D104,
+    D107,
     I001,
     I003,
     I005,
@@ -14,6 +15,7 @@ ignore =
     WPS202,
     WPS221,
     WPS235,
+    WPS226,
     WPS300,
     WPS306,
     WPS305,
@@ -24,7 +26,8 @@ ignore =
     WPS432,
     WPS441,
     W503,
-    DAR201
+    DAR201,
+    DAR401
 exclude = .git,__pycache__,docs/source/conf.py,old,build,dist
 max-line-length = 88
 per-file-ignores=
