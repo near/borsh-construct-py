@@ -1,4 +1,4 @@
-This is an outline of all the types supported by Borsh. Since Borsh is Rust-centric, some Rust snippets are included to make it clear what the equivalent Rust type is.
+This is an outline of all the types supported by `borsh-py`. Since Borsh is Rust-centric, some Rust snippets are included to make it clear what the equivalent Rust type is.
 
 ## Numeric types
 
@@ -33,13 +33,15 @@ b'*\x00\x00\x00'
 >>> from borsh import U8
 >>> U8[3].build([1, 2, 3])
 b'\x01\x02\x03'
+>>> U8[3].parse(b'\x01\x02\x03')
+ListContainer([1, 2, 3])
 
 ```
 
 This is what that fixed size array looks like in Rust:
 
 ```rust
-let arr = [1u8, 2u8, 3u8];
+let arr = [1u8, 2, 3];
 
 ```
 
@@ -51,6 +53,8 @@ Dynamic arrays are implemented using the `Vec` function:
 >>> from borsh import Vec, U8
 >>> Vec(U8).build([1, 2, 3])
 b'\x03\x00\x00\x00\x01\x02\x03'
+>>> Vec(U8).parse(b'\x03\x00\x00\x00\x01\x02\x03')
+ListContainer([1, 2, 3])
 
 ```
 
@@ -73,6 +77,8 @@ This is analogous to a Rust struct with named fields:
 ... )
 >>> person.build({"name": "Alice", "age": 50})
 b'\x05\x00\x00\x00Alice2'
+>>> person.parse(b'\x05\x00\x00\x00Alice2')
+Container(name=u'Alice', age=50)
 
 ```
 Rust type:
@@ -90,6 +96,8 @@ struct Person {
 >>> pair = TupleStruct(I32, F32)
 >>> pair.build([3, 0.5])
 b'\x03\x00\x00\x00\x00\x00\x00?'
+>>> pair.parse(b'\x03\x00\x00\x00\x00\x00\x00?')
+ListContainer([3, 0.5])
 
 ```
 Rust type:
