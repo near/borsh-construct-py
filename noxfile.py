@@ -5,4 +5,4 @@ from nox_poetry import session
 def tests(session):  # noqa: D103,WPS442
     session.run_always("poetry", "install", external=True)
     session.install(".")
-    session.run("pytest")
+    session.run("pytest", external=True)
