@@ -7,7 +7,6 @@ from construct import Int32sl as I32
 from construct import Int64sl as I64
 from construct import Int64ul as U64
 
-
 from .core import (
     F32,
     F64,
