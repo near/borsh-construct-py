@@ -2,16 +2,9 @@ from typing import Any, Optional, List, Tuple
 from math import isnan
 from construct import Adapter, Array, BytesInteger, Construct
 from construct import singleton  # type: ignore
-from construct import Flag as Bool
 from construct import FormatField, FormatFieldError, GreedyBytes, IfThenElse
-from construct import Int8sl as I8
 from construct import Int8ul as U8
-from construct import Int16sl as I16
-from construct import Int16ul as U16
-from construct import Int32sl as I32
 from construct import Int32ul as U32
-from construct import Int64sl as I64
-from construct import Int64ul as U64
 from construct import Pass, Prefixed, PrefixedArray
 from construct import Sequence
 from construct import Struct
