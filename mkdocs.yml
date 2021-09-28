@@ -17,3 +17,7 @@ markdown_extensions:
   - admonition
 repo_url: https://github.com/near/borsh-py
 repo_name: near/borsh-py
+nav:
+  - index.md
+  - types.md
+  - defining_new_types.md
