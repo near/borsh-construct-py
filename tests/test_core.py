@@ -41,6 +41,7 @@ ENUM = Enum(
     "TupleVariant" / TupleStruct(U128, String, I64, Option(U16)),
     "CStructVariant"
     / CStruct("u128_field" / U128, "string_field" / String, "vec_field" / Vec(U16)),
+    enum_name="Placeholder",
 )
 
 TYPE_INPUT_EXPECTED = (
@@ -346,7 +347,7 @@ def test_named_tuple_struct_field_raises() -> None:
 def test_unnamed_subcon_raises() -> None:
     """Check that error is raised when enum variant or CStruct field is unnamed."""
     with pytest.raises(ValueError) as excinfo:
-        Enum("foo", TupleStruct(U8))
+        Enum("foo", TupleStruct(U8), enum_name="placeholder")
     assert str(excinfo.value) == str(UNNAMED_SUBCON_ERROR)
 
 
@@ -374,5 +375,12 @@ def test_underscore_name_raises() -> None:
 def test_unrecognized_variant_type_raises() -> None:
     """Check that error is raised if variant type is not valid."""
     with pytest.raises(ValueError) as excinfo:
-        Enum("foo" / U8)
+        Enum("foo" / U8, enum_name="placeholder")
     assert "Unrecognized" in str(excinfo.value)
+
+
+def test_duplicate_variant_name_raises() -> None:
+    """Check error raised if two variants in same Enum have same name."""
+    with pytest.raises(ValueError) as excinfo:
+        Enum("foo", "foo", enum_name="placeholder")
+    assert "must be unique" in str(excinfo.value)

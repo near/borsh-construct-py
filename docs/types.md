@@ -122,25 +122,34 @@ Defining an enum:
 ...     "Move" / CStruct("x" / I32, "y" / I32),
 ...     "Write" / TupleStruct(String),
 ...     "ChangeColor" / TupleStruct(I32, I32, I32),
+...     enum_name="Message",
 ... )
 >>> message.build(message.enum.Quit())
 b'\x00'
 >>> message.parse(b'\x00')
-EnumDef.Quit()
+Message.Quit()
 >>> message.build(message.enum.Move(x=1, y=3))
 b'\x01\x01\x00\x00\x00\x03\x00\x00\x00'
 >>> message.parse(b'\x01\x01\x00\x00\x00\x03\x00\x00\x00')
-EnumDef.Move(x=1, y=3)
+Message.Move(x=1, y=3)
 >>> message.build(message.enum.Write(("hello",)))
 b'\x02\x05\x00\x00\x00hello'
 >>> message.parse(b'\x02\x05\x00\x00\x00hello')
-EnumDef.Write(tuple_data=ListContainer(['hello']))
+Message.Write(tuple_data=ListContainer(['hello']))
 >>> message.build(message.enum.ChangeColor((1, 2, 3)))
 b'\x03\x01\x00\x00\x00\x02\x00\x00\x00\x03\x00\x00\x00'
 >>> message.parse(b'\x03\x01\x00\x00\x00\x02\x00\x00\x00\x03\x00\x00\x00')
-EnumDef.ChangeColor(tuple_data=ListContainer([1, 2, 3]))
+Message.ChangeColor(tuple_data=ListContainer([1, 2, 3]))
 
 ```
+
+Notice also how each variant of the enum is a subclass of the enum itself:
+
+```python
+>>> assert isinstance(message.enum.Quit(), message.enum)
+
+```
+
 Rust type:
 ```rust
 enum Message {
