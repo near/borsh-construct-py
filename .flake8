@@ -18,6 +18,7 @@ ignore =
     WPS235,
     WPS226,
     WPS300,
+    WPS301,
     WPS306,
     WPS305,
     WPS326,
@@ -34,3 +35,4 @@ max-line-length = 88
 per-file-ignores=
     src/borsh/core.py:F401
     tests/test_core.py:S101,DAR101
+    tests/test_hypothesis.py:S101,DAR101,B008,WPS404

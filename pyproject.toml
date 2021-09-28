@@ -23,6 +23,7 @@ mkdocs-material = "^7.2.6"
 flake8 = "^3.9.2"
 pytest-flake8 = "^1.0.7"
 pytest-mypy = "^0.8.1"
+hypothesis = "^6.23.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
