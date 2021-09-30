@@ -1,4 +1,4 @@
-This is an outline of all the types supported by `borsh-py`. Since Borsh is Rust-centric, some Rust snippets are included to make it clear what the equivalent Rust type is.
+This is an outline of all the types supported by `borsh-construct`. Since Borsh is Rust-centric, some Rust snippets are included to make it clear what the equivalent Rust type is.
 
 ## Numeric types
 
@@ -12,7 +12,7 @@ All numeric types mentioned in the Borsh spec are supported:
 Example:
 
 ```python
->>> from borsh import U32
+>>> from borsh_construct import U32
 >>> U32.build(42)
 b'*\x00\x00\x00'
 >>> U32.parse(b'*\x00\x00\x00')
@@ -23,14 +23,14 @@ b'*\x00\x00\x00'
 
 !!! note
 
-    Most of the numeric types come directly from the `construct` library, and are just aliased so that they match the Borsh spec. For example, `borsh.U8` is really `construct.Int8ul`.
+    Most of the numeric types come directly from the `construct` library, and are just aliased so that they match the Borsh spec. For example, `borsh_construct.U8` is really `construct.Int8ul`.
 
 ## Fixed sized arrays
 
 `construct` gives us a nice `[]` syntax to represent fixed sized arrays. For example, an array of 3 u8 integers:
 
 ```python
->>> from borsh import U8
+>>> from borsh_construct import U8
 >>> U8[3].build([1, 2, 3])
 b'\x01\x02\x03'
 >>> U8[3].parse(b'\x01\x02\x03')
@@ -50,7 +50,7 @@ let arr = [1u8, 2, 3];
 Dynamic arrays are implemented using the `Vec` function:
 
 ```python
->>> from borsh import Vec, U8
+>>> from borsh_construct import Vec, U8
 >>> Vec(U8).build([1, 2, 3])
 b'\x03\x00\x00\x00\x01\x02\x03'
 >>> Vec(U8).parse(b'\x03\x00\x00\x00\x01\x02\x03')
@@ -70,7 +70,7 @@ let v = vec![1u8, 2, 3];
 This is analogous to a Rust struct with named fields:
 
 ```python
->>> from borsh import CStruct, String, U8
+>>> from borsh_construct import CStruct, String, U8
 >>> person = CStruct(
 ...     "name" / String,
 ...     "age" / U8
@@ -92,7 +92,7 @@ struct Person {
 
 ## Tuple structs
 ```python
->>> from borsh import TupleStruct, I32, F32
+>>> from borsh_construct import TupleStruct, I32, F32
 >>> pair = TupleStruct(I32, F32)
 >>> pair.build([3, 0.5])
 b'\x03\x00\x00\x00\x00\x00\x00?'
@@ -109,14 +109,14 @@ struct Pair(i32, f32);
 
 ## Enum
 
-Rust's `enum` is the trickiest part of `borsh-py` because it's rather different from Python's `enum.Enum`. Under the hood, `borsh-py` uses the [`sumtypes`](https://sumtypes.readthedocs.io/en/latest/) library to represent Rust enums in Python.
+Rust's `enum` is the trickiest part of `borsh-construct` because it's rather different from Python's `enum.Enum`. Under the hood, `borsh-construct` uses the [`sumtypes`](https://sumtypes.readthedocs.io/en/latest/) library to represent Rust enums in Python.
 
 Notice below how our `message` object has a `.enum` attribute: this is the Python imitation of Rust's enum type.
 
 Defining an enum:
 
 ```python
->>> from borsh import Enum, I32, CStruct, TupleStruct, String
+>>> from borsh_construct import Enum, I32, CStruct, TupleStruct, String
 >>> message = Enum(
 ...     "Quit",
 ...     "Move" / CStruct("x" / I32, "y" / I32),
@@ -165,7 +165,7 @@ enum Message {
 You can think of HashMap as a Python dictionary as long as the keys and values have a well-defined type.
 
 ```python
->>> from borsh import HashMap, String, U32
+>>> from borsh_construct import HashMap, String, U32
 >>> scores = HashMap(String, U32)
 >>> scores.build({"Blue": 10, "Yellow": 50})
 b'\x02\x00\x00\x00\x04\x00\x00\x00Blue\n\x00\x00\x00\x06\x00\x00\x00Yellow2\x00\x00\x00'
@@ -190,7 +190,7 @@ fn main() {
 The HashSet is similar to a Python `set` with a well-defined type.
 
 ```python
->>> from borsh import HashSet, I32
+>>> from borsh_construct import HashSet, I32
 >>> a = HashSet(I32)
 >>> a.build({1, 2, 3})
 b'\x03\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x03\x00\x00\x00'
@@ -213,7 +213,7 @@ fn main() {
 Rust programmers will notice that our Option type is not implemented like a Rust enum, because it's not worth the complexity.
 
 ```python
->>> from borsh import Option, U8
+>>> from borsh_construct import Option, U8
 >>> optional_num = Option(U8)
 >>> optional_num.build(None)
 b'\x00'
@@ -235,7 +235,7 @@ Option<u8>
 The Borsh spec doesn't specifically mention serializing raw bytes, but it's worth including anyway:
 
 ```python
->>> from borsh import Bytes
+>>> from borsh_construct import Bytes
 >>> Bytes.build(bytes([1, 2, 3]))
 b'\x03\x00\x00\x00\x01\x02\x03'
 >>> Bytes.parse(b'\x03\x00\x00\x00\x01\x02\x03')
@@ -253,7 +253,7 @@ vec![1u8, 2, 3]
 Python:
 
 ```python
->>> from borsh import String
+>>> from borsh_construct import String
 >>> String.build("🚀🚀🚀")
 b'\x0c\x00\x00\x00\xf0\x9f\x9a\x80\xf0\x9f\x9a\x80\xf0\x9f\x9a\x80'
 >>> String.parse(b'\x0c\x00\x00\x00\xf0\x9f\x9a\x80\xf0\x9f\x9a\x80\xf0\x9f\x9a\x80')

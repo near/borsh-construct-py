@@ -1,6 +1,6 @@
 # Defining New Types
 
-You can build new schemas on top of `borsh-py` using [`construct.Adapter`](https://construct.readthedocs.io/en/latest/adapters.html#adapting).
+You can build new schemas on top of `borsh-construct` using [`construct.Adapter`](https://construct.readthedocs.io/en/latest/adapters.html#adapting).
 
 For example, here we implement (de)serialization for Python's `Fraction` class:
 
@@ -8,7 +8,7 @@ For example, here we implement (de)serialization for Python's `Fraction` class:
 from typing import Tuple
 from fractions import Fraction
 from construct import Adapter
-from borsh import I32, TupleStruct
+from borsh_construct import I32, TupleStruct
 
 
 class Frac(Adapter):

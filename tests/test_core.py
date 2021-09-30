@@ -2,7 +2,7 @@
 from typing import Any
 
 import pytest
-from borsh import (
+from borsh_construct import (
     F32,
     F64,
     I8,
@@ -26,7 +26,7 @@ from borsh import (
     HashSet,
     Bytes,
 )
-from borsh.core import (
+from borsh_construct.core import (
     NAMED_TUPLE_FIELD_ERROR,
     TUPLE_DATA,
     UNNAMED_SUBCON_ERROR,

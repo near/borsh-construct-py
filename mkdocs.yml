@@ -1,4 +1,4 @@
-site_name: borsh-py
+site_name: borsh-construct
 theme:
   name: material
   palette:
@@ -15,8 +15,8 @@ markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
   - admonition
-repo_url: https://github.com/near/borsh-py
-repo_name: near/borsh-py
+repo_url: https://github.com/near/borsh-construct-py
+repo_name: near/borsh-construct-py
 nav:
   - index.md
   - types.md

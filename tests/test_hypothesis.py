@@ -1,7 +1,7 @@
 from hypothesis import given
 import hypothesis.strategies as st
 
-from borsh import (
+from borsh_construct import (
     U8,
     I8,
     U16,
