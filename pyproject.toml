@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "borsh"
+name = "borsh-construct"
 version = "0.1.0"
 description = "Python implementation of Borsh serialization"
 authors = ["kevinheavey <kevinheavey123@gmail.com>"]
@@ -34,7 +34,7 @@ source = ["src", "*/site-packages"]
 
 [tool.coverage.run]
 branch = true
-source = ["borsh"]
+source = ["borsh_construct"]
 
 [tool.coverage.report]
 show_missing = true
