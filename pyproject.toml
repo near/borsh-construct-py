@@ -1,8 +1,13 @@
 [tool.poetry]
 name = "borsh-construct"
 version = "0.1.0"
-description = "Python implementation of Borsh serialization"
+description = "Python implementation of Borsh serialization, built on the Construct library."
 authors = ["kevinheavey <kevinheavey123@gmail.com>"]
+license = "MIT"
+homepage = "https://github.com/near/borsh-construct-py"
+repository = "https://github.com/near/borsh-construct-py"
+readme = "README.md"
+
 
 [tool.poetry.dependencies]
 python = "^3.8.3"
