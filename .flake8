@@ -1,0 +1,38 @@
+[flake8]
+ignore =
+    D100,
+    D104,
+    D107,
+    I001,
+    I003,
+    I004,
+    I005,
+    N814,
+    Q000,
+    WPS110,
+    WPS111,
+    WPS115,
+    WPS201,
+    WPS202,
+    WPS221,
+    WPS235,
+    WPS226,
+    WPS300,
+    WPS301,
+    WPS306,
+    WPS305,
+    WPS326,
+    WPS410,
+    WPS412,
+    WPS430,
+    WPS432,
+    WPS441,
+    W503,
+    DAR201,
+    DAR401
+exclude = .git,__pycache__,docs/source/conf.py,old,build,dist
+max-line-length = 88
+per-file-ignores=
+    src/borsh/core.py:F401
+    tests/test_core.py:S101,DAR101
+    tests/test_hypothesis.py:S101,DAR101,B008,WPS404

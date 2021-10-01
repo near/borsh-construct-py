@@ -1,0 +1,23 @@
+site_name: borsh-construct
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: lime
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - admonition
+repo_url: https://github.com/near/borsh-construct-py
+repo_name: near/borsh-construct-py
+nav:
+  - index.md
+  - types.md
+  - defining_new_types.md
