@@ -33,6 +33,6 @@ ignore =
 exclude = .git,__pycache__,docs/source/conf.py,old,build,dist
 max-line-length = 88
 per-file-ignores=
-    src/borsh/core.py:F401
+    src/borsh_construct/core.py:F401
     tests/test_core.py:S101,DAR101
     tests/test_hypothesis.py:S101,DAR101,B008,WPS404
