@@ -1,5 +1,8 @@
 # borsh-construct
 
+[![Tests](https://github.com/near/borsh-construct-py/workflows/Tests/badge.svg)](https://github.com/near/borsh-construct-py/actions?workflow=Tests)
+[![Docs](https://github.com/near/borsh-construct-pye/workflows/Docs/badge.svg)](https://near.github.io/borsh-construct-py/)
+
 `borsh-construct` is an implementation of the [Borsh](https://borsh.io/) binary serialization format for Python projects.
 
 Borsh stands for Binary Object Representation Serializer for Hashing. It is meant to be used in security-critical projects as it prioritizes consistency, safety, speed, and comes with a strict specification.
