@@ -21,7 +21,7 @@ markdown_extensions:
   - admonition
 repo_url: https://github.com/near/borsh-construct-py
 repo_name: near/borsh-construct-py
-site_url: https://kevinheavey.github.io/anchorpy/
+site_url: https://near.github.io/borsh-construct-py/
 nav:
   - index.md
   - types.md
