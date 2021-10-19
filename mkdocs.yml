@@ -1,6 +1,9 @@
 site_name: borsh-construct
 theme:
   name: material
+  icon:
+    logo: material/bowl-mix
+  favicon: img/bowl-mix.svg
   palette:
     - scheme: default
       primary: lime
