@@ -1,6 +1,9 @@
 site_name: borsh-construct
 theme:
   name: material
+  icon:
+    logo: material/bowl-mix
+  favicon: img/bowl-mix.svg
   palette:
     - scheme: default
       primary: lime
@@ -11,12 +14,14 @@ theme:
       toggle:
         icon: material/toggle-switch
         name: Switch to light mode
+  custom_dir: overrides
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
   - admonition
 repo_url: https://github.com/near/borsh-construct-py
 repo_name: near/borsh-construct-py
+site_url: https://near.github.io/borsh-construct-py/
 nav:
   - index.md
   - types.md
