@@ -7,6 +7,7 @@
 
 Borsh stands for Binary Object Representation Serializer for Hashing. It is meant to be used in security-critical projects as it prioritizes consistency, safety, speed, and comes with a strict specification.
 
+Read the [Documentation](https://near.github.io/borsh-construct-py/).
 ## Installation
 
 ```sh
